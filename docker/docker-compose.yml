@@ -1,0 +1,33 @@
+version: '3'
+services:
+  nginx:
+    build: nginx
+    command: nginx -g "daemon off;"
+    links:
+      - php
+    ports:
+      - "80:80"
+    volumes:
+      - ../laravel-source/public:/var/www/html/app/public
+
+  php:
+    build: php
+    volumes:
+      - ../laravel-source:/var/www/html/app
+    working_dir: /var/www/html/public
+    command: php-fpm
+    links:
+      - db
+    ports:
+      - "9000:9000"
+
+  db:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: DitIsNietMijnRootWachtwoordVriend
+      MYSQL_DATABASE: lumen
+      MYSQL_USER: lumen
+      MYSQL_PASSWORD: DitIsNietMijnWachtwoordVriend
